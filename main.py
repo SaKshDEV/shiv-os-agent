@@ -1,3 +1,4 @@
+from shiv_memory import load_memory,save_memory
 from shiv_brain import process_command
 
 def main():
@@ -7,7 +8,16 @@ def main():
     print("Foundation module initialized.")
     print("================================")
 
-    user_name = input("SHIV: pehle apna naam bata bhai:")
+    memory = load_memory()
+    user_name = memory.get("user_name","")
+
+    if not user_name:
+        user_name = input("SHIV:Tera naam kya hai bhai?").strip()
+
+    if user_name:
+        memory["user_name"] = user_name
+        save_memory(memory)
+
     print(f"SHIV: Har Har Mahadev,{user_name}!")
 
     while True:
@@ -17,7 +27,8 @@ def main():
 
         if response == "EXIT":
             print("SHIV: theek hai bhai, milte hain phir")
-            break      
+            break 
+                 
         print(f"SHIV: {response}")
 if __name__ == "__main__":
     main()
