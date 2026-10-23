@@ -1,5 +1,6 @@
 from shiv_memory import load_memory,save_memory
-from shiv_brain import process_command
+from shiv_brain import process_command,normalize_voice_command
+from  shiv_voice import listen_once
 
 def main():
     print("================================")
@@ -22,7 +23,20 @@ def main():
 
     while True:
         command = input("\nyou: ").strip().lower()
+        if command == "voice":
+            try:
+                recognised_text = listen_once()
+            except Exception as error:
+                print(f"SHIV: Voice input mein problem aaayi: {error}")
+                continue
 
+            if not recognized_text:
+                print("SHIV: kcuhh sunai nhi diya.Dobara try kar.")
+                continue
+
+            print(f"YOU (voice): {recognized_text}")  
+            command = recognized_text          
+        command = normalize_voice_command(command)
         response = process_command(command,user_name)
         if response == "CHANGE_NAME":
             new_name = input("SHIV: naya naam kya rakhu?").strip()

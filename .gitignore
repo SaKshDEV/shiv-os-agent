@@ -5,3 +5,4 @@ __pycache__/
 .venv/
 venv/
 shiv_memory.json
+models/
