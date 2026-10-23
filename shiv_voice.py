@@ -13,6 +13,17 @@ MODEL_PATH = (
 SAMPLE_RATE = 16000
 RECORD_SECONDS = 5
 
+_model = None
+
+def get_model():
+    global _model
+
+    if _model is None:
+        print("SHIV: Spech model load ho raha hai...")
+        _model = Model(str(MODEL_PATH))
+
+    return _model    
+
 def listen_once():
     if not MODEL_PATH.is_dir():
         raise FileNotFoundError(
@@ -21,7 +32,7 @@ def listen_once():
 
     print("SHIV: Microphone on hai. ab 5 seconds tak bolo!")
 
-    model = Model(str(MODEL_PATH))
+    model = get_model()
     recognizer = KaldiRecognizer(model, SAMPLE_RATE)
 
     audio = sd.rec(
