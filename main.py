@@ -25,7 +25,7 @@ def main():
         command = input("\nyou: ").strip().lower()
         if command == "voice":
             try:
-                recognised_text = listen_once()
+                recognized_text = listen_once()
             except Exception as error:
                 print(f"SHIV: Voice input mein problem aaayi: {error}")
                 continue
