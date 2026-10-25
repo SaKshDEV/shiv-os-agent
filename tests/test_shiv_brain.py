@@ -34,6 +34,19 @@ class TestShivBrain(unittest.TestCase):
             "Ye command abhi samajh nahi aayi."
         )
 
+    def test_natural_time_phrases(self):
+        phrases = [
+            "bhai abhi ka time bata",
+            "abhi ka time bata",
+            "समय बताओ",
+            "मुझे अभी का समय बताओ",
+        ]
+
+        for phrase in phrases:
+            with self.subTest(phrase= phrase):
+                result = normalize_voice_command(phrase)
+                self.assertEqual(result,"time") 
+
 
 if __name__ == "__main__":
     unittest.main()
