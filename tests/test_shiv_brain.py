@@ -1,7 +1,12 @@
 
 import unittest
 
-from shiv_brain import normalize_voice_command, process_command
+from shiv_brain import (
+    normalize_voice_command,
+    process_command,
+    detect_intent,
+    process_intent,
+    )
 
 
 class TestShivBrain(unittest.TestCase):
@@ -46,6 +51,24 @@ class TestShivBrain(unittest.TestCase):
             with self.subTest(phrase= phrase):
                 result = normalize_voice_command(phrase)
                 self.assertEqual(result,"time") 
+
+
+    def test_detect_time_intent(self):
+        result = detect_intent("time")
+        self.assertEqual(result, "get_time")
+
+    def test_detect_unknown_intent(self):
+        result = detect_intent("dance")
+        self.assertEqual(result, "unknown")
+
+    def test_process_change_name_intent(self):
+        result = process_intent("change_name", "Saksham")
+        self.assertEqual(result, "CHANGE_NAME")
+
+    def test_process_get_time_intent(self):
+        result = process_intent("get_time", "Saksham")
+        self.assertTrue(result.startswith("Abhi time hai "))
+
 
 
 if __name__ == "__main__":

@@ -37,31 +37,56 @@ def normalize_voice_command(text):
     return text
 
 
-def process_command(command, user_name):
-    if command == "hello":
+
+COMMAND_INTENTS = {
+    "hello": "greet",
+    "change name": "change_name",
+    "mera naam badal do": "change_name",
+    "naam badal do": "change_name",
+    "forget name": "forget_name",
+    "naam bhool ja": "forget_name",
+    "mera naam bhool ja": "forget_name",
+    "help": "help",
+    "time": "get_time",
+    "exit": "exit",
+}
+
+def detect_intent(command):
+    command = command.strip().lower()
+    return COMMAND_INTENTS.get(command, "unknown")
+
+
+def process_intent(intent, user_name):
+    if intent == "greet":
         if user_name:
             return f"Hey {user_name} bhai! Kaisa hai?"
         return "Hey bhai! Kaisa hai?"
 
-    elif command in (
-        "change name", "mera naam badal do", "naam badal do"
-    ):
+    elif intent == "change_name":
         return "CHANGE_NAME"
 
-    elif command in (
-        "forget name", "naam bhool ja", "mera naam bhool ja"
-    ):
+    elif intent == "forget_name":
         return "FORGET_NAME"
 
-    elif command == "help":
-        return "Commands: hello, help, time, change name, forget name, exit"
+    elif intent == "help":
+        return (
+            "Commands: hello, help, time, "
+            "change name, forget name, exit"
+        )
 
-    elif command == "time":
+    elif intent == "get_time":
+        from datetime import datetime
         current_time = datetime.now().strftime("%I:%M:%S %p")
         return f"Abhi time hai {current_time}"
 
-    elif command == "exit":
+    elif intent == "exit":
         return "EXIT"
 
     else:
         return "Ye command abhi samajh nahi aayi."
+
+
+def process_command(command, user_name):
+    intent = detect_intent(command)
+    return process_intent(intent, user_name)
+
