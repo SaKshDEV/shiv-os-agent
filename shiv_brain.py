@@ -28,6 +28,17 @@ def normalize_voice_command(text):
         "मेरा नाम भूल जा": "forget name",
         "बंद हो जाओ": "exit",
         "बाहर निकलो": "exit",
+        "नोटपैड खोलो": "open notepad",
+        "नोटपैड खोल दो": "open notepad",
+        "notepad kholo": "open notepad",
+        "notepad khol do": "open notepad",
+        "नोट पैड खोलो": "open notepad",
+        "नोट पैड खोल दो": "open notepad",
+        "कैलकुलेटर खोलो": "open calculator",
+        "कैलकुलेटर खोल दो": "open calculator",
+        "calculator kholo": "open calculator",
+        "calculator khol do": "open calculator",
+
     }
 
     for phrase, command in voice_commands.items():
@@ -49,6 +60,8 @@ COMMAND_INTENTS = {
     "help": "help",
     "time": "get_time",
     "exit": "exit",
+    "open notepad": "open_notepad",
+    "open calculator": "open_calculator",
 }
 
 def detect_intent(command):
@@ -73,6 +86,12 @@ def process_intent(intent, user_name):
             "Commands: hello, help, time, "
             "change name, forget name, exit"
         )
+
+    elif intent == "open_notepad":
+        return "OPEN_NOTEPAD"
+
+    elif intent == "open_calculator":
+        return "OPEN_CALCULATOR"        
 
     elif intent == "get_time":
         from datetime import datetime

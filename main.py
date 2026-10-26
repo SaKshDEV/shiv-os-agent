@@ -1,6 +1,7 @@
 from shiv_memory import load_memory,save_memory
 from shiv_brain import process_command,normalize_voice_command
 from  shiv_voice import listen_once
+from shiv_desktop import open_application
 
 def main():
     print("================================")
@@ -37,7 +38,18 @@ def main():
             print(f"YOU (voice): {recognized_text}")  
             command = recognized_text          
         command = normalize_voice_command(command)
+
         response = process_command(command,user_name)
+        if response == "OPEN_NOTEPAD":
+            succes,message = open_application("notepad")
+            print(f"SHIV: {message}")
+            continue
+
+        elif response == "OPEN_CALCULATOR":
+            succes, message = open_application("calculator")
+            print(f"Shiv:{message}")
+            continue    
+
         if response == "CHANGE_NAME":
             new_name = input("SHIV: naya naam kya rakhu?").strip()
 

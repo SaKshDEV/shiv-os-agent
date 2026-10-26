@@ -68,7 +68,27 @@ class TestShivBrain(unittest.TestCase):
     def test_process_get_time_intent(self):
         result = process_intent("get_time", "Saksham")
         self.assertTrue(result.startswith("Abhi time hai "))
+    
+    def test_notepad_command_flow(self):
+        command = normalize_voice_command("notepad kholo")
+        intent = detect_intent(command)
+        response = process_command(command, "Saksham")
 
+        self.assertEqual(command, "open notepad")
+        self.assertEqual(intent, "open_notepad")
+        self.assertEqual(response, "OPEN_NOTEPAD")
+
+    def test_calculator_command_flow(self):
+        command = normalize_voice_command("कैलकुलेटर खोलो")
+        intent = detect_intent(command)
+        response = process_command(command, "Saksham")
+
+        self.assertEqual(command, "open calculator")
+        self.assertEqual(intent, "open_calculator")
+        self.assertEqual(response, "OPEN_CALCULATOR")
+    def test_spaced_notepad_phrase(self):
+        result = normalize_voice_command("नोट पैड खोलो")
+        self.assertEqual(result, "open notepad")
 
 
 if __name__ == "__main__":
