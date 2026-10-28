@@ -1,15 +1,17 @@
 from shiv_memory import load_memory, save_memory
-from shiv_brain import process_command, normalize_voice_command
+from shiv_agent import interpret_request
 from shiv_voice import listen_once
 from shiv_desktop import open_application
-from shiv_speech import speak
+from shiv_speech import speak, to_hindi_speech_text
 
 
 def shiv_reply(message):
-    print(f"SHIV: {message}")
+    speech_text = to_hindi_speech_text(message)
+
+    print(f"SHIV: {speech_text}")
 
     try:
-        speak(message)
+        speak(speech_text)
     except Exception as error:
         print(f"SHIV: Voice output nahi chal paaya: {error}")
 
@@ -18,7 +20,7 @@ def main():
     print("================================")
     print("SHIV OS")
     print("Your personal AI companion")
-    print("Foundation module initialized.")
+    print("Agent Core initialized.")
     print("================================")
 
     memory = load_memory()
@@ -51,47 +53,44 @@ def main():
             print(f"YOU (voice): {recognized_text}")
             command = recognized_text
 
-        command = normalize_voice_command(command)
-        response = process_command(command, user_name)
+        result = interpret_request(command, user_name)
 
-        if response == "OPEN_NOTEPAD":
-            success, message = open_application("notepad")
+        if result.kind == "action":
+            success, message = open_application(result.value)
             shiv_reply(message)
             continue
 
-        elif response == "OPEN_CALCULATOR":
-            success, message = open_application("calculator")
-            shiv_reply(message)
-            continue
+        if result.kind == "control":
 
-        if response == "CHANGE_NAME":
-            shiv_reply("Naya naam kya rakhu bhai?")
-            new_name = input("YOU: ").strip()
+            if result.value == "change_name":
+                shiv_reply("Naya naam kya rakhu bhai?")
+                new_name = input("YOU: ").strip()
 
-            if new_name:
-                user_name = new_name
-                memory["user_name"] = user_name
+                if new_name:
+                    user_name = new_name
+                    memory["user_name"] = user_name
+                    save_memory(memory)
+                    shiv_reply(
+                        f"Samajh gaya bhai, ab tujhe {user_name} bulaunga!"
+                    )
+                else:
+                    shiv_reply("Naam khali nahi ho sakta.")
+
+                continue
+
+            if result.value == "forget_name":
+                memory.pop("user_name", None)
                 save_memory(memory)
-                shiv_reply(
-                    f"Samajh gaya bhai, ab tujhe {user_name} bulaunga!"
-                )
-            else:
-                shiv_reply("Naam khali nahi ho sakta.")
+                user_name = ""
+                shiv_reply("Tera naam saved memory se delete kar diya.")
+                continue
 
-            continue
+            if result.value == "exit":
+                shiv_reply("Theek hai bhai, milte hain phir!")
+                break
 
-        elif response == "FORGET_NAME":
-            memory.pop("user_name", None)
-            save_memory(memory)
-            user_name = ""
-            shiv_reply("Tera naam saved memory se delete kar diya.")
-            continue
-
-        if response == "EXIT":
-            shiv_reply("Theek hai bhai, milte hain phir!")
-            break
-
-        shiv_reply(response)
+        if result.kind == "reply":
+            shiv_reply(result.value)
 
 
 if __name__ == "__main__":
