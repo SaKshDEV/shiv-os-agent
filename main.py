@@ -1,7 +1,7 @@
 from shiv_memory import load_memory, save_memory
 from shiv_agent import interpret_request
 from shiv_voice import listen_once
-from shiv_desktop import open_application
+from shiv_tools import execute_tool
 from shiv_speech import speak, to_hindi_speech_text
 
 
@@ -56,7 +56,7 @@ def main():
         result = interpret_request(command, user_name)
 
         if result.kind == "action":
-            success, message = open_application(result.value)
+            success, message = execute_tool(result.value)
             shiv_reply(message)
             continue
 
