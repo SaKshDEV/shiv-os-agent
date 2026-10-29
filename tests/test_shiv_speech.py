@@ -24,7 +24,6 @@ class TestShivSpeech(unittest.TestCase):
             "shiv_speech.pyttsx3.init",
             return_value=mock_engine,
         ) as mock_init:
-
             shiv_speech.speak("Hello SHIV")
 
         mock_init.assert_called_once_with()
@@ -38,7 +37,6 @@ class TestShivSpeech(unittest.TestCase):
             "shiv_speech.pyttsx3.init",
             return_value=mock_engine,
         ) as mock_init:
-
             shiv_speech.speak("First test")
             shiv_speech.speak("Second test")
             shiv_speech.speak("Third test")
@@ -73,12 +71,38 @@ class TestShivSpeech(unittest.TestCase):
             voice="male",
             speed=shiv_speech.SPEECH_SPEED,
         )
-
         mock_play.assert_called_once_with(
             mock_audio,
             samplerate=shiv_speech.SAMPLE_RATE,
         )
         mock_wait.assert_called_once_with()
+
+    def test_time_is_converted_to_complete_hindi(self):
+        result = shiv_speech.to_hindi_speech_text(
+            "Abhi time hai 09:30:00 PM"
+        )
+
+        self.assertEqual(
+            result,
+            "अभी रात के नौ बजकर तीस मिनट हुए हैं।",
+        )
+
+    def test_greeting_preserves_user_name(self):
+        result = shiv_speech.to_hindi_speech_text(
+            "Hey Saksham bhai! Kaisa hai?"
+        )
+
+        self.assertEqual(result, "अरे सक्षम भाई, कैसे हो?")
+
+    def test_startup_greeting_preserves_user_name(self):
+        result = shiv_speech.to_hindi_speech_text(
+            "Har Har Mahadev, Saksham!"
+        )
+
+        self.assertEqual(
+            result,
+            "हर हर महादेव, सक्षम। तुम्हारा स्वागत है।",
+        )
 
 
 if __name__ == "__main__":
